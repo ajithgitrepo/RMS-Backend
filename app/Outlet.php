@@ -16,7 +16,7 @@ class Outlet extends Model
     public $timestamps = true;
      
     protected $fillable = [
-         'outlet_id','outlet_name','outlet_lat', 'outlet_longi' ,'outlet_area','outlet_city','outlet_state','outlet_country'];
+         'outlet_id','outlet_name','outlet_lat', 'outlet_longi' ,'outlet_area','outlet_city','outlet_state','outlet_country','created_by'];
     
     public function timesheet()
     {
