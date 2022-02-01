@@ -51,7 +51,7 @@ class ApiRelieverController extends Controller
                 'reliever'  => function($query) {
                     $query->select(['employee_id','first_name','middle_name','surname']);
                 }
-            ])->get();
+            ])->where('created_by',Auth::user()->emp_id)->get();
         // DB::table('stock_expiry');
        // $result = $result->get();
 
@@ -137,6 +137,11 @@ class ApiRelieverController extends Controller
         ->whereIn('id', $get_timesheet_id)
         ->update(['is_active' =>  0,
                   'updated_at' =>date('y-m-d H:i:s')]);
+
+                  $make_deactive_timesheet1 = DB::table('merchant_time_sheet')
+                  ->whereIn('id', $get_timesheet_id)
+                  ->update(['is_active' =>  0,
+                            'updated_at' =>date('y-m-d H:i:s')]);
    
         $result =  DB::table('reliever')->insert(
                 array(
