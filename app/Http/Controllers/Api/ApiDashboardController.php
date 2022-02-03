@@ -65,6 +65,25 @@ class ApiDashboardController extends Controller
         }   
     }
 
+  /*  public function dashboard_dailytest(Request $request, journeyplan $modal)
+    {
+        $EmpID = $request->emp_id;
+        $userid  =  Auth::user();
+        $Type = "Day"; 
+      
+        if(!is_null($userid)) { 
+
+              $Result = $this->Get_Dashboard_All_Details1($EmpID, $Type);     
+               return $Result;
+              
+           }
+   else {
+            return response()->json(["status" => "failed", "message" => "Whoops! invalid auth token"]);
+        }   
+    } */
+
+     
+
     function Get_Dashboard_All_Details($EmpID, $Type)
     {
             // JOIN merchant_time_sheet vs outlet 
@@ -141,6 +160,16 @@ class ApiDashboardController extends Controller
                $arraytime[] = $CalculateTime;
                }
 
+            $splitqueryReal =  DB::table('outlet_journey_time')
+            ->where('is_active', 1)
+            ->where('employee_id', $EmpID)
+            ->whereDate('outlet_journey_time.date', $date)->get();
+
+            foreach ($splitqueryReal as $spli) {
+            $CalculateTime = $this->timeDiff($spli->checkin_time,$spli->checkout_time);
+            $arraytime[] = $CalculateTime;
+            }  
+
               //dd($arraytime);
 
               $TotalWorkingTime1 = 0;
@@ -168,6 +197,11 @@ class ApiDashboardController extends Controller
               $CalculateEffectTime = $this->timeDiff($att->checkin_time,$att->checkout_time);
             $arrayEffecttime[] = $CalculateEffectTime;
             }  
+
+            foreach ($splitqueryReal as $spli) {
+                  $CalculateTime = $this->timeDiff($spli->checkin_time,$spli->checkout_time);
+                  $arrayEffecttime[] = $CalculateTime;
+               }
 
             $TotalEffectiveTime = 0;
             foreach ($arrayEffecttime as $tim) {
@@ -209,7 +243,7 @@ class ApiDashboardController extends Controller
       $percent = 0;
       if($total != 0 && $wl != 0)
       {
-       $percent =  $total / $wl  * 100;   
+       $percent =  $total / $wl  * 50/$wl;   
        $percent = round($percent, 0);
       }
       else
